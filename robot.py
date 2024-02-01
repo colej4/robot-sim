@@ -74,8 +74,8 @@ def main():
         
         #calculate acceleration based on voltage
         # print(robot_wheels)
-        left_accel = (robot_voltage[0] - (np.sign(robot_wheels[0]) * robot_constants[0] + robot_wheels[0] * robot_constants[1] / robot_constants[2]))
-        right_accel = (robot_voltage[1] - (np.sign(robot_wheels[1]) * robot_constants[0] + robot_wheels[1] * robot_constants[1] / robot_constants[2]))
+        left_accel = ((robot_voltage[0] - (np.sign(robot_wheels[0]) * robot_constants[0] + robot_wheels[0] * robot_constants[1])) / robot_constants[2])
+        right_accel = ((robot_voltage[1] - (np.sign(robot_wheels[1]) * robot_constants[0] + robot_wheels[1] * robot_constants[1])) / robot_constants[2])
         #add accel to the wheels
         robot_wheels[0] += left_accel * elapsed
         robot_wheels[1] += right_accel * elapsed
