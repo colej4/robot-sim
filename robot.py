@@ -33,7 +33,7 @@ def main():
     running = True
     
     #create a robot
-    robot_state = [-30,30,math.pi / 12,0,0,0]
+    robot_state = [-30,30,0,0,0,0]
     robot_wheels = [0,0]
     robot_voltage = [0,0]
     robot_constants = (0.5, 0.1527, 0.286)
@@ -68,7 +68,7 @@ def main():
           
         
         screen.fill("white")        
-        draw_rotated_rectangle(screen, "red", (-robot_state[0] * ZOOM_FACTOR, robot_state[1] * ZOOM_FACTOR), (1 * ZOOM_FACTOR, 15 * ZOOM_FACTOR), robot_state[2] * 180 / math.pi)
+        draw_rotated_rectangle(screen, "red", (-robot_state[0] * ZOOM_FACTOR, robot_state[1] * ZOOM_FACTOR), (14 * ZOOM_FACTOR, 15 * ZOOM_FACTOR), robot_state[2] * 180 / math.pi)
         
         
         
@@ -76,8 +76,11 @@ def main():
         # print(robot_wheels)
         left_accel = (robot_voltage[0] - (np.sign(robot_wheels[0]) * robot_constants[0] + robot_wheels[0] * robot_constants[1] / robot_constants[2]))
         right_accel = (robot_voltage[1] - (np.sign(robot_wheels[1]) * robot_constants[0] + robot_wheels[1] * robot_constants[1] / robot_constants[2]))
-        print([left_accel, right_accel])
-        robot_accel = (left_accel + right_accel) / 2
+        #add accel to the wheels
+        robot_wheels[0] += left_accel * elapsed
+        robot_wheels[1] += right_accel * elapsed
+        #calc accels
+        robot_accel = (left_accel + right_accel) * WHEEL_RADIUS / 2
         robot_alpha = (right_accel - left_accel) * WHEEL_RADIUS / WIDTH
         #calculate state rate of change based on wheel accel
         robot_state[3] += (robot_accel * -math.sin(robot_state[2])) * elapsed
@@ -94,6 +97,7 @@ def main():
         robot_state[0] += robot_state[3] * elapsed
         robot_state[1] += robot_state[4] * elapsed
         robot_state[2] += robot_state[5] * elapsed
+        print(robot_state)
         
         pygame.display.flip()
         last_time = current_time
